@@ -1,15 +1,3 @@
-<!-- Creiamo una pagina web che conterrà un form HTML e implementiamo un sistema di validazione per l'indirizzo email inserito dall'utente, assicurandoci che sia ben formattato e che contenga un punto ed una chiocciola. -->
-
-<!-- Milestone 1 (creazione del form)
-Creare un file index.php contenente un form HTML con un campo di input per l'inserimento dell'indirizzo email.
-Implementare la logica di controllo dell'email direttamente in index.php.
-Mostrare il risultato della validazione sulla stessa pagina. -->
-
-<!-- Milestone 2 (functions.php)
-Creare un file functions.php per gestire la logica di controllo dell'email.
-Utilizzare l'istruzione include in index.php per incorporare il file functions.php.
-Rifattorizzare il codice in modo che la logica di controllo dell'email sia contenuta in functions.php. -->
-
 <!-- Milestone 3: (Stile dell'alert)
 Modificare la classe dell'alert in base all'esito della funzione di validazione.
 Utilizzare la classe alert-success per indicare un esito positivo e alert-danger per un esito negativo. -->
@@ -23,15 +11,11 @@ Nel caso di esito negativo, garantire che il valore inserito precedentemente nel
 Sfruttare le variabili GET per mantenere e visualizzare l'indirizzo email errato nell'input. -->
 
 <?php
+require_once __DIR__ . "/partials/functions.php";
+
 if (isset($_POST["user-email"])) {
     $user_email = $_POST["user-email"];
-    if (str_contains($user_email, ".it") || str_contains($user_email, ".com") ) {
-        $check_mail = "Grazie per esserti iscritto alla newsletter di Boolean";
-        $esito = "bg-success-subtle";
-    } else {
-        $check_mail = "L'email inserita è errata, deve terminare con '.it' o '.com'";
-        $esito = "bg-danger-subtle";
-    }
+    $result = check_email($user_email);
 }
 ?>
 
@@ -55,9 +39,9 @@ if (isset($_POST["user-email"])) {
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
-        <?php if (isset($_POST["user-email"])) { ?>
-            <div class="p-3 w-50 mx-auto my-3 <?php echo $esito ?>">
-            <?php echo $check_mail?>
+        <?php if (isset($result)) { ?>
+            <div class="p-3 w-50 mx-auto my-3 <?php echo $result ? "bg-success-subtle" : "bg-danger-subtle" ?>">
+            <?php echo $result ? "Grazie per esserti iscritto alla newsletter di Boolean!" : "La mail è errata!"?>
             </div>
         <?php } ?>
     </div>
