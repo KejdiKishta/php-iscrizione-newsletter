@@ -1,21 +1,23 @@
-<!-- Milestone 3: (Stile dell'alert)
-Modificare la classe dell'alert in base all'esito della funzione di validazione.
-Utilizzare la classe alert-success per indicare un esito positivo e alert-danger per un esito negativo. -->
-
-<!-- BONUS:
-Milestone 4: (Redirect)
-Implementare un redirect a una pagina di ringraziamento (thankyou.php) in caso di esito positivo.
-Utilizzare la session PHP per memorizzare l'indirizzo email registrato durante la procedura di validazione.
-Milestone 5: (Visualizzare valore errato)
-Nel caso di esito negativo, garantire che il valore inserito precedentemente nel campo di input rimanga visibile.
-Sfruttare le variabili GET per mantenere e visualizzare l'indirizzo email errato nell'input. -->
-
 <?php
 require_once __DIR__ . "/partials/functions.php";
+
+$result = false;
+$error = "";
+
+if (!isset($_SESSION)) {
+    session_start();
+}
 
 if (isset($_POST["user-email"])) {
     $user_email = $_POST["user-email"];
     $result = check_email($user_email);
+    
+    if ($result) {
+        $_SESSION["auth"] = true;
+        header("Location: ./thankyou.php");
+    } else {
+        $error = "La mail inserit è errata! controlla che finisca con .com o .it";
+    }
 }
 ?>
 
@@ -31,6 +33,9 @@ if (isset($_POST["user-email"])) {
 </head>
 <body>
     <div class="container py-5">
+        <div>
+
+        </div>
         <form class="border p-3 w-50 mx-auto" action="index.php" method="POST">
             <div class="mb-3">
                 <label for="email" class="form-label">Email address</label>
@@ -39,9 +44,9 @@ if (isset($_POST["user-email"])) {
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
-        <?php if (isset($result)) { ?>
-            <div class="p-3 w-50 mx-auto my-3 <?php echo $result ? "bg-success-subtle" : "bg-danger-subtle" ?>">
-            <?php echo $result ? "Grazie per esserti iscritto alla newsletter di Boolean!" : "La mail è errata!"?>
+        <?php if (!empty($error)) { ?>
+            <div class="p-3 w-50 mx-auto my-3 bg-danger-subtle">
+            <?php echo $error ?>
             </div>
         <?php } ?>
     </div>
